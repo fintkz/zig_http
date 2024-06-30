@@ -6,6 +6,8 @@ const expect = std.testing.expect;
 
 const constantHandler = @import("constants.zig");
 
+/// Opens a local file and returns its contents as a byte array.
+/// If the file is not found, it returns an error.
 pub fn openLocalFile(path: []const u8) ![]u8 {
     const localPath = path[1..];
     const file = fs.cwd().openFile(localPath, .{}) catch |err| switch (err) {
@@ -22,6 +24,8 @@ pub fn openLocalFile(path: []const u8) ![]u8 {
     return try file.readToEndAlloc(memory, maxSize);
 }
 
+/// Returns the MIME type for a given file path.
+/// If the MIME type is not found, it returns "application/octet-stream".
 pub fn mimeForPath(path: []const u8) []const u8 {
     const extension = std.fs.path.extension(path);
     inline for (constantHandler.mimeTypes) |kv| {

@@ -7,6 +7,8 @@ const fileHandler = @import("file.zig");
 const constantHandler = @import("constants.zig");
 const errorHandler = @import("errors.zig");
 
+/// Generates a 404 NOT FOUND HTTP response.
+/// Returns the response as a byte slice.
 pub fn http404() []const u8 {
     return "HTTP/1.1 404 NOT FOUND \r\n" ++
         "Connection: close\r\n" ++
@@ -16,11 +18,13 @@ pub fn http404() []const u8 {
         "NOT FOUND";
 }
 
+/// Represents an HTTP header.
 pub const HTTPHeader = struct {
     requestLine: []const u8,
     host: []const u8,
     userAgent: []const u8,
 
+    /// Prints the request line and host of the HTTP header.
     pub fn print(self: HTTPHeader) void {
         std.debug.print("{s} - {s}\n", .{
             self.requestLine,
@@ -29,6 +33,8 @@ pub const HTTPHeader = struct {
     }
 };
 
+/// Parses the request line of an HTTP request and returns the path.
+/// If the request line is malformed or the HTTP method is not supported, an error is returned.
 pub fn parsePath(requestLine: []const u8) ![]const u8 {
     var requestLineIter = mem.tokenizeScalar(u8, requestLine, ' ');
     const method = requestLineIter.next().?;
@@ -43,6 +49,8 @@ pub fn parsePath(requestLine: []const u8) ![]const u8 {
     return path;
 }
 
+/// Parses the header of an HTTP request and returns a structured representation.
+/// If the header is malformed, an error is returned.
 pub fn parseHeader(header: []const u8) !HTTPHeader {
     var headerStruct = HTTPHeader{
         .requestLine = undefined,
